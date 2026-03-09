@@ -1,8 +1,3 @@
-"""
-1_explore_data.py
-STEP 1: Load and explore the sales data
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

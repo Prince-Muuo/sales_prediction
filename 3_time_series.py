@@ -1,8 +1,3 @@
-"""
-3_time_series.py
-STEP 3: Build a Time-Series model using Facebook Prophet
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

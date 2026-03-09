@@ -1,8 +1,3 @@
-"""
-generate_sample_data.py
-Creates realistic sample sales data for testing our prediction system
-"""
-
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta

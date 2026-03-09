@@ -1,8 +1,3 @@
-"""
-2_linear_regression.py
-STEP 2: Build a Linear Regression model to predict sales
-"""
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt

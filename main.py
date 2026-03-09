@@ -1,8 +1,3 @@
-"""
-main.py
-MAIN SCRIPT: Runs the entire sales prediction pipeline
-"""
-
 import os
 import subprocess
 import sys

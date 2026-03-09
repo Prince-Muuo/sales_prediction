@@ -1,8 +1,3 @@
-"""
-predict_future.py
-Interactive tool to predict sales for any future date
-"""
-
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta

@@ -1,8 +1,3 @@
-"""
-4_model_comparison.py
-STEP 4: Compare Linear Regression vs Prophet Time-Series Model
-"""
-
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns

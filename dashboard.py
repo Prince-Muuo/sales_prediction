@@ -1,8 +1,3 @@
-"""
-dashboard.py
-Interactive Streamlit Web Dashboard for Sales Prediction System
-"""
-
 import streamlit as st
 import pandas as pd
 import numpy as np
