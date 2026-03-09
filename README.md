@@ -2,8 +2,7 @@ Sales Prediction System - Complete Guide
 A step-by-step system to predict weekly sales using Linear Regression and Time-Series (Prophet) models.
 What You Need:
 Python 3.11 or 3.12** (recommended)
-
-Step 4: Install Required Packages
+Install Required Packages
 pip install...
 
 pandas==2.1.4
