@@ -1,19 +1,21 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
-import plotly.graph_objects as go
-import plotly.express as px
+#import core libraries for UI, data handling, visualization, and modeling
+import streamlit as st         # web app framework
+import pandas as pd         # data manipulation
+import numpy as np         # numerical operations
+import plotly.graph_objects as go        # interactive visualizations
+import plotly.express as px          #quick charts
 from datetime import datetime, timedelta
-from prophet import Prophet
+from prophet import Prophet          # time-series forecasting model
 import warnings
+# ignore warnings for cleaner output
 warnings.filterwarnings('ignore')
 
 # Page configuration
 st.set_page_config(
-    page_title="Sales Prediction System",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    page_title="Sales Prediction System",     #browser tab title
+    page_icon="📊",             # app icon
+    layout="wide",               # full-width layout
+    initial_sidebar_state="expanded"         # sidebar starts expanded
 )
 
 # Custom CSS for better styling
@@ -42,7 +44,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize session state
+# Initialize session state to persist data across interactions
+# Streamlit resets on every interaction, so we store key variables here
 if 'model_trained' not in st.session_state:
     st.session_state.model_trained = False
 if 'model' not in st.session_state:
@@ -50,7 +53,8 @@ if 'model' not in st.session_state:
 if 'historical_data' not in st.session_state:
     st.session_state.historical_data = None
 
-# Load and train model function
+# Cache the model so it doesn't retrain every time (performance optimization)
+
 @st.cache_resource
 def load_and_train_model():
     """Load data and train Prophet model"""
@@ -78,7 +82,8 @@ def load_and_train_model():
     except FileNotFoundError:
         return None, None
 
-# Sidebar
+# Sidebar acts as the app's navigation system
+
 with st.sidebar:
     st.image("https://img.icons8.com/clouds/100/000000/analytics.png", width=100)
     st.title("📊 Sales Predictor")
@@ -286,7 +291,8 @@ elif page == "🔮 Single Prediction":
         """)
     
     if predict_button:
-        # Make prediction
+        # Create input data for prediction
+
         future_df = pd.DataFrame({
             'ds': [pd.to_datetime(prediction_date)],
             'promotion': [1 if promotion else 0],
@@ -294,8 +300,11 @@ elif page == "🔮 Single Prediction":
         })
         
         with st.spinner("🔮 Predicting..."):
+            # Generate prediction using trained model
+
             forecast = model.predict(future_df)
-            
+            # Extract results
+
             predicted_sales = forecast['yhat'].values[0]
             lower_bound = forecast['yhat_lower'].values[0]
             upper_bound = forecast['yhat_upper'].values[0]
@@ -429,7 +438,7 @@ elif page == "📊 Batch Predictions":
     )
     
     st.markdown("---")
-    
+    # Allow users to upload CSV for multiple predictions
     uploaded_file = st.file_uploader("Upload your CSV file", type=['csv'])
     
     if uploaded_file is not None:
@@ -444,10 +453,12 @@ elif page == "📊 Batch Predictions":
             
             if st.button("🚀 Generate Predictions", type="primary"):
                 with st.spinner("Predicting..."):
-                    # Prepare for Prophet
+                        # Rename for Prophet compatibility
+
                     future_df = batch_df.rename(columns={'date': 'ds'})
                     
-                    # Make predictions
+                        # Predict all rows at once (vectorized prediction)
+
                     forecast = model.predict(future_df)
                     
                     # Combine results
@@ -543,12 +554,12 @@ elif page == "📈 Model Analytics":
         
         # Metrics comparison
         st.subheader("🏆 Model Comparison")
-        
+       # Compare model performance using standard metrics 
         from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
-        
+        # MAE = average prediction error
         lr_mae = mean_absolute_error(lr_pred['actual_sales'], lr_pred['predicted_sales'])
         prophet_mae = mean_absolute_error(prophet_pred['actual_sales'], prophet_pred['predicted_sales'])
-        
+        # R² = how well model explains variance
         lr_r2 = r2_score(lr_pred['actual_sales'], lr_pred['predicted_sales'])
         prophet_r2 = r2_score(prophet_pred['actual_sales'], prophet_pred['predicted_sales'])
         
@@ -642,6 +653,8 @@ elif page == "⚙️ Settings":
     
     # Upload new data
     st.markdown("### Upload New Training Data")
+    # Allow user to upload new dataset and retrain model
+
     new_data = st.file_uploader("Upload sales_data.csv", type=['csv'])
     
     if new_data is not None:
@@ -649,6 +662,8 @@ elif page == "⚙️ Settings":
             with open('sales_data.csv', 'wb') as f:
                 f.write(new_data.getbuffer())
             st.success("✅ Data uploaded! Retraining model...")
+                # Clear cache and retrain model
+
             st.cache_resource.clear()
             st.rerun()
     

@@ -3,17 +3,17 @@ SALES PREDICTION MODEL COMPARISON REPORT
 =========================================
 
 Dataset Information:
-- Total test samples: 21
-- Date range: 2023-08-05 00:00:00 to 2023-12-23 00:00:00
-- Actual sales range: $9,646 - $14,668
+- Total test samples: 147
+- Date range: 2024-08-07 00:00:00 to 2024-12-31 00:00:00
+- Actual sales range: $11,158 - $25,950
 
 Performance Metrics:
 -------------------
   Metric  Linear Regression  Prophet (Time-Series)
- MAE ($)        1061.528324             918.266147
-RMSE ($)        1258.313641            1070.686449
-R² Score          -0.364154               0.012334
-MAPE (%)           9.445869               8.235340
+ MAE ($)        1784.411054             829.651065
+RMSE ($)        2227.115288            1062.718829
+R² Score           0.495756               0.885187
+MAPE (%)           9.691254               4.795646
 
 Winner by Metric:
 -----------------

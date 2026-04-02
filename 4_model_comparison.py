@@ -101,7 +101,9 @@ print("-" * 40)
 fig, axes = plt.subplots(2, 2, figsize=(16, 10))
 
 # 1. Side-by-side predictions
-dates = lr_predictions['date']
+# Ensure alignment between dates and predictions for accurate visualization
+# Mismatched dimensions can lead to incorrect or misleading plots
+dates = prophet_predictions['date']
 actuals = lr_predictions['actual_sales']
 
 axes[0, 0].plot(dates, actuals, label='Actual', marker='o', linewidth=2.5, color='black')

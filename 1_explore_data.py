@@ -100,7 +100,11 @@ print("✅ Visualization saved: 1_data_exploration.png")
 fig2, axes2 = plt.subplots(1, 2, figsize=(15, 5))
 
 # Monthly average
+# Extract day of week from date to analyze weekly sales patterns
+# (Helps identify which days drive the most revenue)
 df['month'] = df['date'].dt.month
+# Create day of week feature (0=Monday, 6=Sunday)
+df['day_of_week'] = df['date'].dt.dayofweek
 monthly_avg = df.groupby('month')['sales'].mean()
 axes2[0].plot(monthly_avg.index, monthly_avg.values, marker='o', linewidth=2)
 axes2[0].set_title('Average Sales by Month', fontsize=14, fontweight='bold')

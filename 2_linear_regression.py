@@ -16,9 +16,11 @@ print("\n📂 Loading data...")
 df = pd.read_csv('sales_data.csv')
 df['date'] = pd.to_datetime(df['date'])
 
-# Feature engineering
+# Feature engineering: extracting time-based patterns from date
+# These features help the model understand seasonality and trends
 print("\n1️⃣ FEATURE ENGINEERING")
 print("-" * 40)
+df['day_of_week'] = df['date'].dt.dayofweek
 df['week_of_year'] = df['date'].dt.isocalendar().week
 df['month'] = df['date'].dt.month
 df['quarter'] = df['date'].dt.quarter
@@ -33,8 +35,16 @@ print(f"  • year: Year")
 print(f"  • days_since_start: Days since first record (captures trend)")
 
 # Select features for the model
-features = ['promotion', 'holiday', 'temperature', 'day_of_week', 
-            'week_of_year', 'month', 'quarter', 'days_since_start']
+features = [
+    'promotion',
+    'holiday',
+    'week_of_year',
+    'month',
+    'quarter',
+    'year',
+    'days_since_start',
+    'day_of_week'
+]
 
 X = df[features]
 y = df['sales']
@@ -176,27 +186,40 @@ results_df.to_csv('linear_regression_predictions.csv', index=False)
 print("✅ Predictions saved: linear_regression_predictions.csv")
 
 # Example: Predict next week
+# Ensure prediction input matches training feature schema exactly
+# This guarantees consistency between training and inference phases
 print("\n🔮 EXAMPLE: PREDICTING NEXT WEEK")
 print("-" * 40)
-next_week_features = {
-    'promotion': 1,  # Planning a promotion
-    'holiday': 0,    # Not a holiday
-    'temperature': 22.0,
-    'day_of_week': 1,  # Tuesday
-    'week_of_year': 1,
-    'month': 1,
-    'quarter': 1,
-    'days_since_start': df['days_since_start'].max() + 7
-}
 
-next_week_df = pd.DataFrame([next_week_features])
+# Create next week's date
+next_week_date = df['date'].max() + pd.Timedelta(days=7)
+
+# Build feature set EXACTLY like training data
+next_week_df = pd.DataFrame({
+    'promotion': [1],  # Planning a promotion
+    'holiday': [0],    # Not a holiday
+    'week_of_year': [next_week_date.isocalendar().week],
+    'month': [next_week_date.month],
+    'quarter': [(next_week_date.month - 1) // 3 + 1],
+    'year': [next_week_date.year],
+    'days_since_start': [(next_week_date - df['date'].min()).days],
+    'day_of_week': [next_week_date.dayofweek]
+})
+
+# Ensure feature order matches training
+next_week_df = next_week_df[features]
+
+# Scale features
 next_week_scaled = scaler.transform(next_week_df)
+
+# Predict
 next_week_prediction = model.predict(next_week_scaled)[0]
 
 print(f"Predicted sales for next week: ${next_week_prediction:,.2f}")
+
 print("\nInput features:")
-for key, value in next_week_features.items():
-    print(f"  • {key}: {value}")
+for col in next_week_df.columns:
+    print(f"  • {col}: {next_week_df[col].values[0]}")
 
 print("\n" + "=" * 60)
 print("✅ LINEAR REGRESSION MODEL COMPLETE!")
